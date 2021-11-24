@@ -9,7 +9,6 @@ class Project(models.Model):
     user = models.ManyToManyField(User, name='user')
     date_of_creation = models.DateTimeField(auto_now_add=True, name='date_of_creation')
     date_of_deletion = models.DateTimeField(auto_now=True, name='date_of_deletion')
-    notes = models.ForeignKey('Note', on_delete=models.CASCADE, name='notes')
     active = models.BooleanField(default=True, name='active')
 
     def __str__(self):
@@ -19,6 +18,7 @@ class Project(models.Model):
 
 class Note(models.Model):
     text = models.TextField(name='text')
+    notes = models.ForeignKey(Project, on_delete=models.CASCADE, name='project')
     date_of_creation = models.DateTimeField(auto_now_add=True, name='date_of_creation')
     update_date = models.DateTimeField(auto_now=True, name='update_date')
     user = models.ForeignKey(User,on_delete=models.PROTECT, name='user')
