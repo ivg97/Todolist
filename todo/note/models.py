@@ -18,7 +18,7 @@ class Project(models.Model):
 
 class Note(models.Model):
     text = models.TextField(name='text')
-    notes = models.ForeignKey(Project, on_delete=models.CASCADE, name='project')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, name='project')
     date_of_creation = models.DateTimeField(auto_now_add=True, name='date_of_creation')
     update_date = models.DateTimeField(auto_now=True, name='update_date')
     user = models.ForeignKey(User,on_delete=models.PROTECT, name='user')

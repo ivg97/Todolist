@@ -8,7 +8,7 @@ from users.serializers import UserModelSerializer
 class NoteModelSerializer(ModelSerializer):
     class Meta:
         model = Note
-        fields = ['text', 'user', 'date_of_creation', 'update_date', 'active']
+        fields = ['text', 'user', 'project', 'date_of_creation', 'update_date', 'active']
 
 
 class ProjectModelSerializer(ModelSerializer):
