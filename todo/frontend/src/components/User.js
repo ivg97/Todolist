@@ -1,9 +1,12 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
 const UserItem = ({user}) =>{
     return(
         <tr>
-            <td>{user.username}</td>
+            <td>
+                <Link className="link-user" to={`user/${user.id}`}>{user.username}</Link>
+            </td>
             <td>{user.first_name}</td>
             <td>{user.last_name}</td>
             <td>{user.email}</td>
@@ -18,7 +21,7 @@ const UserList = ({users}) =>{
             <th>First name</th>
             <th>Last name</th>
             <th>Email</th>
-            {users.map((user) => <UserItem user={user}/> )}
+            {users.map((user) => <UserItem user={user} />)}
         </table>
     )
 }

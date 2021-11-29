@@ -14,4 +14,4 @@ class NoteModelSerializer(ModelSerializer):
 class ProjectModelSerializer(ModelSerializer):
     class Meta:
         model = Project
-        fields = ['name', 'user', 'link_to_repo', 'active']
+        fields = ['name', 'user', 'link_to_repo', 'active', 'date_of_creation']

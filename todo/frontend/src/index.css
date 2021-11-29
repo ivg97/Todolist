@@ -13,9 +13,29 @@ code {
 }
 
 
+
+.link-user{
+  color: black;
+}
+
 /*========================
            Menu
 ==========================*/
+
+.menu-todo{
+  float: left;
+}
+
+.menu-todo a{
+  padding: 5px 5px 5px 5px;
+  text-decoration: none;
+  color: #D78100;
+}
+
+.menu-todo a:hover{
+  color: #a05b0b;
+}
+
 
 *{
   margin: 0;
@@ -105,7 +125,7 @@ h1{
 }
 a{
   text-decoration: none;
-  color: white;
+  color: black;
 }
 nav>a{
   position: relative;
