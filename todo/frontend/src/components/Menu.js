@@ -1,6 +1,7 @@
 import React from "react";
 import {Link, BrowserRouter} from "react-router-dom";
 
+
 export const Menu = () => {
     return (
         <header className="clearfix">
@@ -22,9 +23,10 @@ export const Menu = () => {
                         <a href="#">О нас</a>
                     </nav>
                     <div className="menu-todo">
-                                <Link to="/">Пользователи</Link>
-                                <Link to="projects/">Проекты</Link>
-                                <Link to="notes/">Заметки</Link>
+                        <Link to="/">Пользователи</Link>
+                        <Link to="/projects/">Проекты</Link>
+                        <Link to="/notes/">Заметки</Link>
+
                     </div>
                 </div>
             </div>

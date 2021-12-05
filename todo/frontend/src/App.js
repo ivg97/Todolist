@@ -9,6 +9,8 @@ import ProjectList from './components/Project';
 import NoteList from "./components/Note";
 import {BrowserRouter, Link, Route, Redirect} from "react-router-dom";
 import UserProjectList from "./components/UserProject";
+import LoginForm from "./components/LoginForm";
+import Cookies from "universal-cookie/lib";
 
 
 
@@ -20,30 +22,34 @@ class App extends React.Component {
             'users': [],
             'projects': [],
             'notes': [],
+            'token': '',
         }
     }
 
-    componentDidMount() {
-        axios.get('http://127.0.0.1:8000/api/users/').then(
+    load_data(){
+        const headers = this.get_headers()
+        axios.get('http://127.0.0.1:8000/api/users/', {headers}).then(
             response => {
                 const users = response.data
                 this.setState({
                     'users': users,
                 });
             }
-        ).catch(error => console.log(error))
+        ).catch(error => {console.log(error)
+        this.setState({users: []})})
 
-        axios.get('http://127.0.0.1:8000/api/projects/').then(
+        axios.get('http://127.0.0.1:8000/api/projects/', {headers}).then(
             response => {
                 const projects = response.data.results
                 this.setState({
-                'projects': projects
+                    'projects': projects
                 });
 
             }
-        ).catch(error => console.log(error))
+        ).catch(error => {console.log(error)
+        this.setState({projects:[]})})
 
-        axios.get('http://127.0.0.1:8000/api/notes/').then(
+        axios.get('http://127.0.0.1:8000/api/notes/', {headers}).then(
             response => {
                 const notes = response.data.results
                 this.setState({
@@ -52,7 +58,59 @@ class App extends React.Component {
                 console.log(notes)
             }
 
-        ).catch(error => console.log(error))
+        ).catch(error => {console.log(error)
+        this.setState({notes:[]})})
+    }
+
+    set_token(token){
+        const cookies = new Cookies()
+        cookies.set('token', token)
+        this.setState({'token': token}, () => this.load_data())
+    }
+
+
+    is_auth(){
+        return !!this.state.token
+    }
+
+    logout(){
+        this.set_token('')
+    }
+
+    get_token_from_storage(){
+        const cookies = new Cookies()
+        const token = cookies.get('token')
+        this.setState({'token': token}, () => this.load_data())
+    }
+
+
+    get_token(username, password){
+        localStorage.setItem('login', username)
+        let item = localStorage.getItem('login')
+        // document.cookie= 'login=' + username + ';password=' +  password
+        const data = {username: username, password:password}
+        axios.post('http://127.0.0.1:8000/api-token-auth/', data).then(
+            response => {
+                this.set_token(response.data['token'])
+            }
+        ).catch(error => alert('неверный логин или пароль!'))
+
+    }
+
+    get_headers(){
+        let headers = {
+            'Content-Type': 'application/json'
+        }
+        if (this.is_auth()){
+            headers['Authorization'] = 'Token' + this.state.token
+        }
+        return headers
+    }
+
+    componentDidMount() {
+        this.get_token_from_storage()
+        // this.load_data()
+
         // const users = [
         //     {
         //         'username': 'i',
@@ -71,7 +129,9 @@ class App extends React.Component {
             <div>
 
                 <BrowserRouter>
+                    <Route>{this.is_auth() ? <button onClick={()=> this.logout()}> Выйти </button> : <Link to='/login'>Войти</Link>}</Route>
                     <Menu/>
+                    <Route exact path='/login' component={() => <LoginForm get_token={(username, password) => this.get_token(username, password)}/>}/>
                     <Route exact path='/' component={() => <UserList users={this.state.users}/>}/>
                     <Route exact path='/projects' component={() => <ProjectList projects={this.state.projects}/>}/>
                     <Route exact path='/notes' component={() => <NoteList notes={this.state.notes}/>}/>
