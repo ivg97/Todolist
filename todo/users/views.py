@@ -7,8 +7,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import mixins
 
-from users.models import User
-from users.serializers import UserModelSerializer
+from .models import User
+from .serializers import UserModelSerializer, UserModelSerializerV2
 
 
 class UserModelViewSet(ModelViewSet):
@@ -22,7 +22,14 @@ class UserCustomViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin, CreateMo
     queryset = User.objects.all()
     serializer_class = UserModelSerializer
     renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
+
     # permission_classes = [IsAuthenticated]
+    def get_serializer_class(self):
+        if self.request.version == 'v2':
+            return UserModelSerializerV2
+        return UserModelSerializer
 
-
-
+# class UserModelViewSetV2(ModelViewSet):
+#     queryset = User.objects.all()
+#     serializer_class = UserModelSerializerV2
+#     renderer_classes = [JSONRenderer, BrowsableAPIRenderer]

@@ -48,7 +48,9 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     'rest_framework_simplejwt',
-    'mixer'
+    'mixer',
+    # 'django.contrib.staticfiles',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -147,6 +149,7 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer'],
     # 'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated',],
     'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',],
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
