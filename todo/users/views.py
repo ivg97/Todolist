@@ -22,7 +22,6 @@ class UserCustomViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin, CreateMo
     queryset = User.objects.all()
     serializer_class = UserModelSerializer
     renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
-
     # permission_classes = [IsAuthenticated]
     def get_serializer_class(self):
         if self.request.version == 'v2':

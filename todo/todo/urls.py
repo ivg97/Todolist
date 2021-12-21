@@ -20,6 +20,7 @@ from rest_framework.authtoken import views
 from rest_framework.permissions import AllowAny
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from graphene_django.views import GraphQLView
 
 from users.views import UserModelViewSet, UserCustomViewSet
 from note.views import ProjectModelViewSet, NoteModelViewSet
@@ -54,5 +55,6 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0)),
+    path('graphgl/', GraphQLView.as_view(graphql=True)),
 ]
 
