@@ -7,10 +7,12 @@ import Footer from "./components/Footer";
 import Menu from "./components/Menu";
 import ProjectList from './components/Project';
 import NoteList from "./components/Note";
-import {BrowserRouter, Link, Route, Redirect} from "react-router-dom";
+import {BrowserRouter, Link, Route, Redirect, Switch} from "react-router-dom";
 import UserProjectList from "./components/UserProject";
 import LoginForm from "./components/LoginForm";
 import Cookies from "universal-cookie/lib";
+import ProjectForm from "./components/ProjectForm";
+import NoteForm from "./components/NoteForm";
 
 
 
@@ -107,6 +109,47 @@ class App extends React.Component {
         return headers
     }
 
+    deleteProject(id){
+        const headers = this.get_headers()
+        axios.delete(`http://127.0.0.1:8000/api/projects/${id}`, {headers: headers}).then(
+            response => {this.setState({projects: this.state.projects.filter((project)=>project.id !== id)})}
+        ).catch(error => console.log(error))
+    }
+
+    createProject(name, user){
+        const headers = this.get_headers()
+        const data = {name: name, user: user}
+        axios.post(`http://localhost:8000/api/projects`, data, {headers: headers}).then(
+            response => {
+                let new_project = response.data
+                const  user = this.state.user.filter((item) => item.id === new_project.user)[0]
+                new_project.user = user
+                this.setState({projects: [...this.state.projects, new_project]})}
+        ).catch(error => console.log(error))
+    }
+
+    deleteNote(id){
+        const headers = this.get_headers()
+        axios.delete(`https://localhost:8000/appi/notes/${id}`, {headers: headers})
+            .then(response => {
+                this.setState({notes: this.state.notes.filter((note) => note.id !== id)})
+            }).catch(error => console.log(error))
+    }
+
+    createNote(name, project, user){
+        const headers = this.get_headers()
+        const data = {name: name, project: project, user: user}
+        axios.post(`https://localhost:8000/api/notes/`, data, {headers: headers})
+            .then(response => {
+                let new_note = response.data
+                const project = this.state.project.filter((note) => note.id === new_note.project)[0]
+                const user = this.state.user.filter((user) => user.id === new_note.user)[0]
+                new_note.project = project
+                new_note.user = user
+                this.setState({notes: [...this.state.notes, new_note]})
+            }).catch(error => console.log(error))
+    }
+
     componentDidMount() {
         this.get_token_from_storage()
         // this.load_data()
@@ -126,18 +169,24 @@ class App extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="App">
 
                 <BrowserRouter>
                     <Route>{this.is_auth() ? <button onClick={()=> this.logout()}> Выйти </button> : <Link to='/login'>Войти</Link>}</Route>
                     <Menu/>
                     <Route exact path='/login' component={() => <LoginForm get_token={(username, password) => this.get_token(username, password)}/>}/>
                     <Route exact path='/' component={() => <UserList users={this.state.users}/>}/>
-                    <Route exact path='/projects' component={() => <ProjectList projects={this.state.projects}/>}/>
-                    <Route exact path='/notes' component={() => <NoteList notes={this.state.notes}/>}/>
+                    {/*<Route exact path='/projects' component={() => <ProjectList projects={this.state.projects}/>}/>*/}
+                    <Route exact path='/projects/create' component={() => <ProjectForm users={this.state.users} createProject={(name, user) => this.createProject(name, user)}/>}/>
+                    <Route exact path='/projects' component={() => <ProjectList projects={this.state.projects} deleteProject={(id)=>this.deleteProject(id)}/>}/>
+                    <Route exact path='/notes/create' component={()=> <NoteForm createNote={(name, project, user) => this.createNote(name, project, user)}/>}/>
+                    <Route exact path='/notes' component={() => <NoteList notes={this.state.notes} deleteNote={(id) => this.deleteNote(id)}/>}/>
+
                     <Route exact path='/user/:id'>
                         <UserProjectList projects={this.state.projects} users={this.state.users}/>
+
                     </Route>
+
 
                     {/*<Redirect from='/user' to='/projects'/>*/}
                 </BrowserRouter>
